@@ -110,7 +110,6 @@ function deleteLastDigit() {
         previousValue = previousValue.slice(0, -1);
         currentValueOnScreen.textContent = previousValue;
     } else {
-        previousValue = "";
         currentValue = previousValue;
         currentValueOnScreen.textContent = currentValue;
     }
@@ -135,7 +134,7 @@ function handleEqual() {
         operatorFlag = 0;
         operatorAux = "";
         currentValue = "";
-        previousValue = "";
+        // previousValue = "";
     }
 }
 
@@ -193,7 +192,9 @@ function handleOperator(op) {
                 currentValue = "";
             }
         }
-    } 
+    } else {
+        operator = "";
+    }
 }
 
 //Make the calculation
