@@ -1,8 +1,8 @@
 let previousValueOnScreen = document.querySelector(".previous-value");
 let currentValueOnScreen = document.querySelector(".current-value");
-let operator = '';
-let previousValue = '';
-let currentValue = '';
+let operator = "";
+let previousValue = "";
+let currentValue = "";
 let operatorFlag = 0;
 let operatorAux = "";
 let error = "";
@@ -14,20 +14,20 @@ document.addEventListener("keydown", function(e) {
         handleNumber(name);
         currentValueOnScreen.textContent = currentValue;
     } else if(/[-+*/]/.test(name)) {
-        if(currentValueOnScreen.textContent != "" || previousValueOnScreen.textContent != "") {
+        if((currentValueOnScreen.textContent !== "") || (previousValueOnScreen.textContent !== "")) {
             handleOperator(name);
             previousValueOnScreen.textContent = previousValue + " " + operator;
-            if(operatorAux === "" && error === "") {
+            if((operatorAux === "") && (error === "")) {
                 currentValueOnScreen.textContent = currentValue;
             }
         }
-    } else if(name === "Enter" || /[=]/.test(name)) {
+    } else if((name === "Enter") || (/[=]/.test(name))) {
         handleEqual();
      } else if(name === "Delete") {
         clearEntry();
     } else if(name === "Backspace") {
         deleteLastDigit();
-    } else if(name === "." || name === ",") {
+    } else if((name === ".") || (name === ",")) {
         addDecimal(name);
     } else if(name === "Escape") {
         clearAll();
@@ -39,8 +39,8 @@ document.addEventListener("DOMContentLoaded", function() {
     let clearButton = document.querySelector("#clear-all");
     let clearEntryButton = document.querySelector("#clear-entry");
     let deleteButton = document.querySelector("#delete");
-    let equal = document.querySelector("#equal");
-    let decimal = document.querySelector("#decimal");
+    let equalButton = document.querySelector("#equal");
+    let decimalButton = document.querySelector("#decimal");
 
     let numbers = document.querySelectorAll(".number");
     let operators = document.querySelectorAll(".operator");
@@ -51,10 +51,11 @@ document.addEventListener("DOMContentLoaded", function() {
     }))
 
     operators.forEach((op) => op.addEventListener("click", function(e) {
-        if(currentValueOnScreen.textContent != "" || previousValueOnScreen.textContent != "") {
+        if((currentValueOnScreen.textContent !== "") || (previousValueOnScreen.textContent !== "")) {
+            checkDecimal();
             handleOperator(e.target.textContent);
             previousValueOnScreen.textContent = previousValue + " " + operator;
-            if(operatorAux === "" && error === "") {
+            if((operatorAux === "") && (error === "")) {
                 currentValueOnScreen.textContent = currentValue;
             }
         }
@@ -72,20 +73,20 @@ document.addEventListener("DOMContentLoaded", function() {
         deleteLastDigit();
     })
 
-    equal.addEventListener("click", function() {
+    equalButton.addEventListener("click", function() {
         handleEqual();
     })
 
-    decimal.addEventListener("click", function() {
+    decimalButton.addEventListener("click", function() {
         addDecimal();
     })
 })
 
 //Clear the memory
 function clearAll() {
-    previousValue = '';
-    currentValue = '';
-    operator = '';
+    previousValue = "";
+    currentValue = "";
+    operator = "";
     previousValueOnScreen.textContent = currentValue;
     currentValueOnScreen.textContent = currentValue;
     operatorFlag = 0;
@@ -95,41 +96,46 @@ function clearAll() {
 
 //Clear the second operand
 function clearEntry() {
-    currentValue = '';
+    currentValue = "";
     currentValueOnScreen.textContent = currentValue;
 }
 
 //Delete the last digit
 function deleteLastDigit() {
     if(currentValue !== "") {
+        currentValue = currentValue.toString();
         currentValue = currentValue.slice(0, -1);
         currentValueOnScreen.textContent = currentValue;
+    } else if(previousValue !== "") {
+        previousValue = previousValue.slice(0, -1);
+        currentValueOnScreen.textContent = previousValue;
     } else {
-        currentValue = previousValue;
-        currentValue = currentValue.toString().slice(0, -1);
-        currentValueOnScreen.textContent = currentValue;
         previousValue = "";
+        currentValue = previousValue;
+        currentValueOnScreen.textContent = currentValue;
     }
 }
 
 //Handle the result button
 function handleEqual() {
-    if (error !== "") {
+    if(error !== "") {
         clearAll();
     }
 
-    if(currentValue != '' && previousValue != '') {
+    if((currentValue !== "") && (previousValue !== "")) {
         operate();
-        previousValueOnScreen.textContent = '';
+        previousValueOnScreen.textContent = "";
         if(error !== "") {
             currentValueOnScreen.textContent = error;
-            operator = '';
+            operator = "";
         } else {
+            previousValue = previousValue.toString();
             currentValueOnScreen.textContent = previousValue;
         }
         operatorFlag = 0;
         operatorAux = "";
-        currentValue = '';
+        currentValue = "";
+        previousValue = "";
     }
 }
 
@@ -137,10 +143,6 @@ function handleEqual() {
 function handleNumber(num) {
     if(error !== "") {
         clearAll();
-    }
-
-    if(currentValue === '0' || currentValue === '-0') {
-        currentValue = '';
     }
 
     if(currentValue.length <= 10) {
@@ -155,7 +157,7 @@ function handleOperator(op) {
     }
 
     if(operatorFlag === 0) {
-        if (operator === "") {
+        if(operator === "") {
             operator = op;
             operatorFlag = 1;
         }
@@ -164,7 +166,7 @@ function handleOperator(op) {
     }
 
     if((currentValue !== "") && (previousValue !== "")) {
-        if (currentValue === "0") {
+        if(currentValue === "0") {
             currentValueOnScreen.textContent = "error";
             previousValue = "";
             operator = "";
@@ -172,20 +174,21 @@ function handleOperator(op) {
         } else {
             operate();
             currentValueOnScreen.textContent = "";
-            if (op !== operator) {
+            if(op !== operator) {
                 operator = op;
                 currentValue = "";
             }
         }
-    } else if(currentValue !== "" && previousValue === "") {
+    } else if((currentValue !== "") && (previousValue === "")) {
         previousValue = currentValue;
-        currentValue = '';
+        currentValue = "";
+        operator = op;
         operatorFlag = 0;
-    } else if (currentValue === "" && previousValue !== "") {
-        if (operatorAux !== "") {
+    } else if((currentValue === "") && (previousValue !== "")) {
+        if(operatorAux !== "") {
             operator = operatorAux;
         } else {
-            if (op !== operator) {
+            if(op !== operator) {
                 operator = op;
                 currentValue = "";
             }
@@ -205,29 +208,33 @@ function operate() {
                 operator = operatorAux;
             }
             break;
+
         case "-": 
             previousValue -= currentValue;
             if(operatorAux !== "") {
                 operator = operatorAux;
             }
             break;
+
         case "*": 
             previousValue *= currentValue;
             if(operatorAux !== "") {
                 operator = operatorAux;
             }
             break;
+
         case "/":
             if(currentValue != 0) {
                 previousValue /= currentValue;
                 if(operatorAux !== "") {
                     operator = operatorAux;
                 }
-            }else {
+            } else {
                 previousValue = "";
                 error = "Cannot divide by zero 😕";
             }
             break;
+
         default:
             return; 
     }
@@ -243,11 +250,20 @@ function roundNumber(num) {
 function addDecimal() {
     if(!currentValue.includes(".")) {
         if(currentValue !== "") {
-            currentValue += '.';
+            currentValue += ".";
             currentValueOnScreen.textContent = currentValue;
         } else {
-            currentValue += '0.';
+            currentValue += "0.";
             currentValueOnScreen.textContent = currentValue;
         }
+    }
+}
+
+//Check if there are any numbers after the decimal point
+function checkDecimal() {
+    let decimalAux = currentValue.split(".");
+    if(decimalAux[1] === "") {
+        currentValue = decimalAux[0];
+        currentValueOnScreen.textContent = currentValue;
     }
 }
